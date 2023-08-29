@@ -12,17 +12,12 @@
 <div th:insert="~{default/fragment::nav}"></div>
 <!--// search-->
 <div class="input-group mb-3">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-mdb-toggle="dropdown" aria-expanded="false">
-        Dropdown
-    </button>
-    <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('id')">Id</a></li>
-        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('cusname')">Name</a></li>
-        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('birthday')">Birthday</a></li>
-        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('aid')">aid</a></li>
-        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('phone')">Phone</a></li>
-    </ul>
-    <input type="text" class="form-control" aria-label="Text input with dropdown button" />
+    <select id="checkSearch" class=" form-select-bg-size" aria-label="Default select example">
+        <option value="1" selected>Name</option>
+        <option value="2">Phone</option>
+        <option value="3">Aid</option>
+    </select>
+    <input type="text" id="search" onkeyup="search()" class="form-control" aria-label="Text input with dropdown button"/>
 </div>
 <!--// table show resual-->
 <table class="table align-middle mb-0 bg-white">
@@ -46,7 +41,7 @@
 <!--   xu ly phan trang ben duoi-->
 </nav>
 <script>
-    let checkSearch = 'id';
+    let checkSearch = 'cusname';
     function inputCheckSearch(search){
         checkSearch=search;
     }
@@ -66,7 +61,25 @@
             }
         })
     }
-
+    function search() {
+        let search = $('#search').val()
+        let checkSearch = $('#checkSearch').val()
+        if(search==='' || search === undefined){
+            init(0);
+            paging();
+        }
+        else {
+            $.ajax({
+                url: "http://localhost:8088/api/v1/customer/search?key="+checkSearch+"&search="+search,
+                method: 'GET',
+                contentType: 'application/json'
+                , success: function (resp) {
+                    view(resp.data);
+                    $('#pagination').empty();  //xoa phan trang. tam thoi chua lam
+                }
+            })
+        }
+    }
     function view(list) {
         let view = $('#view');
         view.empty() //xoa view de tao moi
