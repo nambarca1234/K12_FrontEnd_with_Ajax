@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/md/css/mdb.min.css}" rel="stylesheet">
+    <script th:src="@{md/js/mdb.min.js}"></script>
+    <script th:src="@{/jquery-3.7.0.min.js}"></script>
+</head>
+<body class="container">
+<div th:insert="~{default/fragment::nav}"></div>
+<!--// search-->
+<div class="input-group mb-3">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-mdb-toggle="dropdown" aria-expanded="false">
+        Dropdown
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('id')">Id</a></li>
+        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('cusname')">Name</a></li>
+        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('birthday')">Birthday</a></li>
+        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('aid')">aid</a></li>
+        <li><a class="dropdown-item" href="#" onclick="inputCheckSearch('phone')">Phone</a></li>
+    </ul>
+    <input type="text" class="form-control" aria-label="Text input with dropdown button" />
+</div>
+<!--// table show resual-->
+<table class="table align-middle mb-0 bg-white">
+    <thead class="bg-light">
+    <tr>
+        <th>id</th>
+        <th>birthday</th>
+        <th>phone</th>
+        <th>aid</th>
+        <th>detail</th>
+    </tr>
+    </thead>
+    <tbody id="view">
+
+
+    </tbody>
+
+</table>
+<!--phan trang-->
+<nav style="margin-left: 600px" aria-label="Page navigation example" id="pagination">
+<!--   xu ly phan trang ben duoi-->
+</nav>
+<script>
+    let checkSearch = 'id';
+    function inputCheckSearch(search){
+        checkSearch=search;
+    }
+
+    $(document).ready(function () {
+        init(0)
+        paging()
+    })
+
+    function init(index) {
+        $.ajax({
+            url: "http://localhost:8088/api/v1/customer/getListCustomerPaging?page="+index+"&size=5&sort=cusname",
+            method: 'GET',
+            contentType: 'application/json'
+            , success: function (resp) {
+                view(resp.data.content)
+            }
+        })
+    }
+
+    function view(list) {
+        let view = $('#view');
+        view.empty() //xoa view de tao moi
+        let str = '';
+        for (let i = 0; i < list.length; i++) {
+            str += ' <tr>\n' +
+                '        <td>\n' +
+                '            <div class="d-flex align-items-center">\n' +
+                '                <img\n' +
+                '                        src="https://mdbootstrap.com/img/new/avatars/8.jpg"\n' +
+                '                        alt=""\n' +
+                '                        style="width: 45px; height: 45px"\n' +
+                '                        class="rounded-circle"\n' +
+                '                />\n' +
+                '                <div class="ms-3">\n' +
+                '                    <p class="fw-bold mb-1">' + list[i].cusname + '</p>\n' +
+                '                    <p class="text-muted mb-0">id : ' + list[i].cusid + '</p>\n' +
+                '                </div>\n' +
+                '            </div>\n' +
+                '        </td>\n' +
+                '        <td>\n' +
+                '            <p class="fw-normal mb-1">'+list[i].birthday+'</p>\n' +
+                '        </td>\n' +
+                '        <td>\n' +
+                '            <span class="badge badge-success rounded-pill d-inline">'+list[i].phone+'</span>\n' +
+                '        </td>\n' +
+                '        <td>'+list[i].aid+'</td>\n' +
+                '        <td>\n' +
+                '            <button type="button" class="btn btn-link btn-sm btn-rounded">\n' +
+                '                Edit\n' +
+                '            </button>\n' +
+                '        </td>\n' +
+                '    </tr>'
+        }
+        view.append(str)
+    }
+function paging(){
+    $.ajax({
+        url: "http://localhost:8088/api/v1/customer/getListCustomerPaging?page=0&size=5&sort=cusname",
+        method: 'GET',
+        contentType: 'application/json'
+        , success: function (resp) {
+            let view =$('#pagination')
+            let str =''
+            str='<ul class="pagination">\n' +
+                '        <li class="page-item">\n' +
+                '            <a class="page-link" href="#" aria-label="Previous">\n' +
+                '                <span aria-hidden="true">&laquo;</span>\n' +
+                '            </a>\n' +
+                '        </li>'
+            for (let i = 0; i < resp.data.totalPages; i++) {
+                str+='<li class="page-item"><a class="page-link" onclick="init('+i+')">'+i+'</a></li>';
+            }
+            str+='<li class="page-item">\n' +
+                '            <a class="page-link" href="#" aria-label="Next">\n' +
+                '                <span aria-hidden="true">&raquo;</span>\n' +
+                '            </a>\n' +
+                '        </li>\n' +
+                '    </ul>';
+            view.append(str)
+        }
+    })
+}
+
+</script>
+</body>
+</html>
