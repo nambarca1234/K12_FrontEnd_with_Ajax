@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link th:href="@{/md/css/mdb.min.css}" rel="stylesheet">
-    <script th:src="@{md/js/mdb.min.js}"></script>
+    <script th:src="@{/md/js/mdb.min.js}"></script>
     <script th:src="@{/jquery-3.7.0.min.js}"></script>
 </head>
 <body class="container">
@@ -17,7 +17,8 @@
         <option value="2">Phone</option>
         <option value="3">Aid</option>
     </select>
-    <input type="text" id="search" onkeyup="search()" class="form-control" aria-label="Text input with dropdown button"/>
+    <input type="text" id="search" onkeyup="search()" class="form-control"
+           aria-label="Text input with dropdown button"/>
 </div>
 <!--// table show resual-->
 <table class="table align-middle mb-0 bg-white">
@@ -38,12 +39,116 @@
 </table>
 <!--phan trang-->
 <nav style="margin-left: 600px" aria-label="Page navigation example" id="pagination">
-<!--   xu ly phan trang ben duoi-->
+    <!--   xu ly phan trang ben duoi-->
 </nav>
+
+<div>
+<!--    tao moi-->
+    <div id="modal">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+            Tạo mới
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade modal-xl" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <section class="vh-100" style="background-color: #eee;">
+                            <div class="container h-100">
+                                <div class="row d-flex justify-content-center align-items-center h-100">
+                                    <div class="col-lg-12 col-xl-11">
+                                        <div class="card text-black" style="border-radius: 25px;">
+                                            <div class="card-body p-md-5">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+
+                                                        <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign
+                                                            up</p>
+
+                                                        <form class="mx-1 mx-md-4">
+<input id="cusid" type="text" value="0" hidden>
+                                                            <div class="d-flex flex-row align-items-center mb-4">
+                                                                <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                                                                <div class="form-outline flex-fill mb-0">
+                                                                    <input type="text" id="cusname"
+                                                                           class="form-control"/>
+                                                                    <label class="form-label" for="cusname">Your
+                                                                        Name</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="d-flex flex-row align-items-center mb-4">
+                                                                <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                                                <div class="form-outline flex-fill mb-0">
+                                                                    <input type="date" id="birthday"
+                                                                           class="form-control"/>
+                                                                    <label class="form-label"
+                                                                           for="birthday">birthday</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="d-flex flex-row align-items-center mb-4">
+                                                                <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                                                <div class="form-outline flex-fill mb-0">
+                                                                    <input type="text" id="phone" class="form-control"/>
+                                                                    <label class="form-label" for="phone">phone</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="d-flex flex-row align-items-center mb-4">
+                                                                <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                                                                <div class="form-outline flex-fill mb-0">
+                                                                    <select id="address"
+                                                                            class="browser-default custom-select">
+                                                                        <option value="1" selected>Hà Nội</option>
+                                                                        <option value="2">Vĩnh Phúc</option>
+                                                                        <option value="3">Đà Nẵng</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </form>
+
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+
+                                                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                                                             class="img-fluid" alt="Sample image">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                        <button onclick="save()" type="button" data-mdb-dismiss="modal" class="btn btn-primary">Save
+                            changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     let checkSearch = 'cusname';
-    function inputCheckSearch(search){
-        checkSearch=search;
+
+    function inputCheckSearch(search) {
+        checkSearch = search;
     }
 
     $(document).ready(function () {
@@ -53,7 +158,7 @@
 
     function init(index) {
         $.ajax({
-            url: "http://localhost:8088/api/v1/customer/getListCustomerPaging?page="+index+"&size=5&sort=cusname",
+            url: "http://localhost:8088/api/v1/customer/getListCustomerPaging?page=" + index + "&size=5&sort=cusname",
             method: 'GET',
             contentType: 'application/json'
             , success: function (resp) {
@@ -61,16 +166,16 @@
             }
         })
     }
+
     function search() {
         let search = $('#search').val()
         let checkSearch = $('#checkSearch').val()
-        if(search==='' || search === undefined){
+        if (search === '' || search === undefined) {
             init(0);
             paging();
-        }
-        else {
+        } else {
             $.ajax({
-                url: "http://localhost:8088/api/v1/customer/search?key="+checkSearch+"&search="+search,
+                url: "http://localhost:8088/api/v1/customer/search?key=" + checkSearch + "&search=" + search,
                 method: 'GET',
                 contentType: 'application/json'
                 , success: function (resp) {
@@ -80,6 +185,7 @@
             })
         }
     }
+
     function view(list) {
         let view = $('#view');
         view.empty() //xoa view de tao moi
@@ -101,14 +207,15 @@
                 '            </div>\n' +
                 '        </td>\n' +
                 '        <td>\n' +
-                '            <p class="fw-normal mb-1">'+list[i].birthday+'</p>\n' +
+                '            <p class="fw-normal mb-1">' + list[i].birthday + '</p>\n' +
                 '        </td>\n' +
                 '        <td>\n' +
-                '            <span class="badge badge-success rounded-pill d-inline">'+list[i].phone+'</span>\n' +
+                '            <span class="badge badge-success rounded-pill d-inline">' + list[i].phone + '</span>\n' +
                 '        </td>\n' +
-                '        <td>'+list[i].aid+'</td>\n' +
+                '        <td>' + list[i].aid + '</td>\n' +
                 '        <td>\n' +
-                '            <button type="button" class="btn btn-link btn-sm btn-rounded">\n' +
+                '            <button type="button" onclick="getCusById('+list[i].cusid+')"  ' +
+                ' data-mdb-toggle="modal" data-mdb-target="#exampleModal"  class="btn btn-link btn-sm btn-rounded">\n' +
                 '                Edit\n' +
                 '            </button>\n' +
                 '        </td>\n' +
@@ -116,33 +223,84 @@
         }
         view.append(str)
     }
-function paging(){
-    $.ajax({
-        url: "http://localhost:8088/api/v1/customer/getListCustomerPaging?page=0&size=5&sort=cusname",
-        method: 'GET',
-        contentType: 'application/json'
-        , success: function (resp) {
-            let view =$('#pagination')
-            let str =''
-            str='<ul class="pagination">\n' +
-                '        <li class="page-item">\n' +
-                '            <a class="page-link" href="#" aria-label="Previous">\n' +
-                '                <span aria-hidden="true">&laquo;</span>\n' +
-                '            </a>\n' +
-                '        </li>'
-            for (let i = 0; i < resp.data.totalPages; i++) {
-                str+='<li class="page-item"><a class="page-link" onclick="init('+i+')">'+i+'</a></li>';
+
+    function paging() {
+        $.ajax({
+            url: "http://localhost:8088/api/v1/customer/getListCustomerPaging?page=0&size=5&sort=cusname",
+            method: 'GET',
+            contentType: 'application/json'
+            , success: function (resp) {
+                let view = $('#pagination')
+                let str = ''
+                str = '<ul class="pagination">\n' +
+                    '        <li class="page-item">\n' +
+                    '            <a class="page-link" href="#" aria-label="Previous">\n' +
+                    '                <span aria-hidden="true">&laquo;</span>\n' +
+                    '            </a>\n' +
+                    '        </li>'
+                for (let i = 0; i < resp.data.totalPages; i++) {
+                    str += '<li class="page-item"><a class="page-link" onclick="init(' + i + ')">' + i + '</a></li>';
+                }
+                str += '<li class="page-item">\n' +
+                    '            <a class="page-link" href="#" aria-label="Next">\n' +
+                    '                <span aria-hidden="true">&raquo;</span>\n' +
+                    '            </a>\n' +
+                    '        </li>\n' +
+                    '    </ul>';
+                view.append(str)
             }
-            str+='<li class="page-item">\n' +
-                '            <a class="page-link" href="#" aria-label="Next">\n' +
-                '                <span aria-hidden="true">&raquo;</span>\n' +
-                '            </a>\n' +
-                '        </li>\n' +
-                '    </ul>';
-            view.append(str)
+        })
+    }
+
+    function save() {
+        let cusid=$('#cusid').val()
+        let customer = {
+            cusname: $('#cusname').val(),
+            phone: $('#phone').val(),
+            birthday: $('#birthday').val(),
+            aid: $('#address').val(),
         }
-    })
-}
+        if(cusid>0){
+            customer.cusid=cusid;
+        }
+        $.ajax({
+            url: "http://localhost:8088/api/v1/customer/save",
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(customer),
+            success: function (resp) {
+                init(0); // reload lai page
+                reset(); //reset form page
+            }
+        })
+    }
+
+    function reset() {
+        let rs = ''
+        $('#cusname').val(rs)
+        $('#phone').val(rs)
+        $('#birthday').val(rs)
+        $('#address').val(rs)
+        $('#cusid').val(rs)
+    }
+    function getCusById(id){
+        $.ajax({
+            url: "http://localhost:8088/api/v1/customer/findCusById?id="+id,
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (resp) {
+                fillCus(resp.data);
+            }
+        })
+    }
+    function fillCus(cus){
+        $('#cusname').val(cus.cusname)
+        $('#phone').val(cus.phone)
+        $('#birthday').val(cus.birthday)
+        $('#address').val(cus.aid)
+        $('#cusid').val(cus.cusid)
+    }
+
 
 </script>
 </body>
