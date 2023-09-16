@@ -43,7 +43,7 @@
 </nav>
 
 <div>
-<!--    tao moi-->
+    <!--    modal tao moi-->
     <div id="modal">
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
@@ -73,7 +73,7 @@
                                                             up</p>
 
                                                         <form class="mx-1 mx-md-4">
-<input id="cusid" type="text" value="0" hidden>
+                                                            <input id="cusid" type="text" value="0" hidden>
                                                             <div class="d-flex flex-row align-items-center mb-4">
                                                                 <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                                                                 <div class="form-outline flex-fill mb-0">
@@ -144,6 +144,28 @@
     </div>
 </div>
 
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Modal title</h5>
+                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="text" name="id" id="id" hidden>
+                    <input type="file" name="file" id="file">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="upload()" data-mdb-dismiss="modal">upload</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     let checkSearch = 'cusname';
 
@@ -195,7 +217,7 @@
                 '        <td>\n' +
                 '            <div class="d-flex align-items-center">\n' +
                 '                <img\n' +
-                '                        src="https://mdbootstrap.com/img/new/avatars/8.jpg"\n' +
+                '                        id="' + list[i].cusid + '" \n' +
                 '                        alt=""\n' +
                 '                        style="width: 45px; height: 45px"\n' +
                 '                        class="rounded-circle"\n' +
@@ -214,14 +236,48 @@
                 '        </td>\n' +
                 '        <td>' + list[i].aid + '</td>\n' +
                 '        <td>\n' +
-                '            <button type="button" onclick="getCusById('+list[i].cusid+')"  ' +
+                '            <button type="button" onclick="getCusById(' + list[i].cusid + ')"  ' +
                 ' data-mdb-toggle="modal" data-mdb-target="#exampleModal"  class="btn btn-link btn-sm btn-rounded">\n' +
                 '                Edit\n' +
                 '            </button>\n' +
                 '        </td>\n' +
+                '        <td>\n' +
+                '<button type="button" className="btn btn-primary"onclick="getId(' + list[i].cusid + ')" data-mdb-toggle="modal" data-mdb-target="#exampleModal2">\n' +
+                '   upload\n' +
+                '</button>' +
+                '        </td>\n' +
                 '    </tr>'
         }
         view.append(str)
+        getImg(list)
+    }
+
+    function getId(id) {
+        $('#id').val(id)
+    }
+
+    function upload() {
+        let formData = new FormData();
+        let file = $('#file')[0].files[0]
+        formData.append('file', file)
+        let id = $('#id').val()
+        $.ajax({
+            url: 'http://localhost:8088/api/file?id=' + id,
+            method: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (resp) {
+                console.log(resp)
+                window.location.href = 'http://localhost:8080/customer'
+            }
+        })
+    }
+
+    function getImg(list) {
+        for (let i = 0; i < list.length; i++) {
+            document.getElementById('' + list[i].cusid).src = 'http://localhost:8088/api/file?id=' + list[i].cusid;
+        }
     }
 
     function paging() {
@@ -253,15 +309,15 @@
     }
 
     function save() {
-        let cusid=$('#cusid').val()
+        let cusid = $('#cusid').val()
         let customer = {
             cusname: $('#cusname').val(),
             phone: $('#phone').val(),
             birthday: $('#birthday').val(),
             aid: $('#address').val(),
         }
-        if(cusid>0){
-            customer.cusid=cusid;
+        if (cusid > 0) {
+            customer.cusid = cusid;
         }
         $.ajax({
             url: "http://localhost:8088/api/v1/customer/save",
@@ -283,9 +339,10 @@
         $('#address').val(rs)
         $('#cusid').val(rs)
     }
-    function getCusById(id){
+
+    function getCusById(id) {
         $.ajax({
-            url: "http://localhost:8088/api/v1/customer/findCusById?id="+id,
+            url: "http://localhost:8088/api/v1/customer/findCusById?id=" + id,
             method: 'GET',
             contentType: 'application/json',
             success: function (resp) {
@@ -293,7 +350,8 @@
             }
         })
     }
-    function fillCus(cus){
+
+    function fillCus(cus) {
         $('#cusname').val(cus.cusname)
         $('#phone').val(cus.phone)
         $('#birthday').val(cus.birthday)
